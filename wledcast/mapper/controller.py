@@ -41,3 +41,6 @@ def ddp(host):
     from wledcast.wled.pixel_writer import PixelWriter
     pw = PixelWriter(host)
     return pw.update_pixels
+
+# def gpio(data_pin):  # TODO: GPIO controller for raspi output
+#     pass

@@ -29,7 +29,7 @@ controller:
 
 mapping:
   - translate:
-      x: 16
+      x: 36
       items:
         - translate:
             x: 56.6

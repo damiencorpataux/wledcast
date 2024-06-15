@@ -15,11 +15,11 @@ from . import shape, controller
 import numpy as np
 from PIL import Image
 import cairosvg
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Dict, Optional
 import io
 
 class Mapping:
-    def __init__(self, mapping: List[Tuple[int, int]], controllers: dict = {}):
+    def __init__(self, mapping: List[Tuple[int, int, str]], controllers: Dict[str, controller.Controller] = {}):
         """
         Initialize the LEDMapper with a given mapping.
 
@@ -44,7 +44,7 @@ class Mapping:
         return chain(*(c.positions for c in self.controllers.values()))
 
     @property
-    def bbox(self) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+    def bbox(self) -> Tuple[Tuple[float, float], Tuple[float, float]]:
         """
         Calculate the bounding box of the mapping.
 
@@ -56,7 +56,7 @@ class Mapping:
         return (min_x, min_y), (max_x, max_y)
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> Tuple[float, float]:
         """
         Calculate the size of the mapping.
 
@@ -72,6 +72,10 @@ class Mapping:
         # width = bbox[1][0] - bbox[0][0] + 1
         # height = bbox[1][1] - bbox[0][1] + 1
         return width, height
+
+    @property
+    def size_rounded(self) -> Tuple[int, int]:
+        return tuple(round(v) for v in self.size)
 
     def write(self, img):
         """
@@ -209,3 +213,58 @@ class Mapping:
         for id, loaded_controller in controller.load(filename).items():
             controllers[id] = loaded_controller
         return Mapping(mapping, controllers)
+
+
+import socket
+import struct
+import threading
+class DDPServer:
+    """
+    DDP Server. E.g., `DDPServer(Mapping(mapping)).run()`.
+    """
+    def __init__(self, mapping: Mapping, ip: str = '0.0.0.0', port: int = 4048):
+        self.ip = ip
+        self.port = port
+        self.mapping = mapping
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind((self.ip, self.port))
+        self.buffer = bytearray()
+        self.expected_length = self.mapping.size_rounded[0] * self.mapping.size_rounded[1] * 3
+        self.stop_event = threading.Event()
+
+    def handle_discovery(self):
+        while not self.stop_event.is_set():
+            data, addr = self.sock.recvfrom(1024)
+            print(f"Received data from {addr}: {data}")
+            if data == b'DDP discovery':
+                response = struct.pack('!BBHH', 0x41, 0, *self.mapping.size_rounded)
+                self.sock.sendto(response, addr)
+                print(f"Sent discovery response to {addr}")
+
+    def handle_ddp(self):
+        while not self.stop_event.is_set():
+            data, addr = self.sock.recvfrom(1024)
+            if data.startswith(b'DDP'):
+                pixel_data = data[10:]
+                self.buffer.extend(pixel_data)
+                print(f'Buffering {len(data)} bytes ({len(self.buffer)}/{self.expected_length})')
+
+                if len(self.buffer) >= self.expected_length:
+                    print(f'Writing frame buffer ({len(self.buffer)})')
+                    # Process the complete frame
+                    complete_frame = self.buffer[:self.expected_length]
+                    self.buffer = self.buffer[self.expected_length:]
+
+                    img = np.frombuffer(complete_frame, dtype=np.uint8).reshape(
+                        (self.mapping.size_rounded[1], self.mapping.size_rounded[0], 3))
+                    self.mapping.write(img)
+
+    def run(self, block: bool = False):
+        print(f'Starting DDP Server on {self.ip}:{self.port}')
+        threading.Thread(target=self.handle_discovery, daemon=True).start()
+        threading.Thread(target=self.handle_ddp, daemon=True).start()
+        if block:
+            self.stop_event.wait()
+
+    def stop(self):
+        self.stop_event.set()

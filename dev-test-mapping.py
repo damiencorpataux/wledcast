@@ -1,10 +1,15 @@
 # YAML mapping declaration
 from wledcast.mapper import Mapping, source
 mapping = Mapping.load('dev-mapping.yaml')
-mapping.display()
+mapping.display(scale=.5)
 print(mapping)
 # mapping.display('svg')
 # import sys; sys.exit()
+
+from wledcast.mapper import DDPServer
+server = DDPServer(mapping)
+server.run(block=True)
+import sys; sys.exit()
 
 # Some source mapped to mapping
 source.run(
@@ -18,6 +23,8 @@ source.run(
         # generator=source.growing_square(side_size=max(mapping.size))))
         # generator=source.image_zoom('/Users/damien/Downloads/rubik-rotating.gif', size=mapping.size)))
         generator=source.screen(to_size=mapping.size)))
+
+# TODO: Implement youtube player, for eg. https://www.youtube.com/watch?v=Wm15rvkifPc
 
 # Growing square mapped to mapping (deprecated)
 # from wledcast.mapper import test
