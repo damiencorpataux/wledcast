@@ -11,6 +11,12 @@ There are loads of cool visualisations/VJ set etc on youtube etc that look great
 
 Issues and PRs are welcomed. This is still alpha at the moment. In my testing it is working on Windows 11 and Ubuntu 20.04 and 22.04. In my limited testing on MacOS, some accessibility features need to be enabled, but it did cast the screen to the LED matrix. The UI, however, was not really working. If someone needs to use it on MacOS, create an Issue, I'll see if I can borrow a mac for testing and spend a little time sorting it out. 
 
+### Mapping POC
+In this branch `dev-pixelmapper`, you can send DDP to multiple hosts and mapping. The easiest way to test it is:
+
+1. Edit your mapping in `dev-mapping.yaml` by defining hosts in `controller:` and your shapes in `mapping:`
+2. Run `test-dev-mapping.py`
+
 ### Features
 - Autodiscovers WLED devices on your network. Choose which to cast to.
 - Pick a window to cast

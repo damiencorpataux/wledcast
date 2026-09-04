@@ -1,13 +1,16 @@
 controller:
   - ddp:
-      host: wled-matrix.local
+      host: 192.168.88.248
       id: controller_1  # TODO: name defaults to host
   - ddp:
       host: ring.local
       id: controller_2
   - ddp:
-      host: panel.local #clock.local
+      host: wled.local # 192.168.88.215  # panel.local
       id: controller_3
+  - ddp:
+      host: 4.3.2.1 #clock.local
+      id: controller_test
   # - e131:
   #     host: example.com
   #     ...
@@ -27,43 +30,81 @@ controller:
 #       balance_g: 0.8
 #       balance_b: 0.85
 
+# mapping:
+#   - translate:
+#       x: 8.3
+#       y: 8.3
+#       items:
+#         - rotate:
+#             angle: 0
+#             items:
+#               - include:
+#                   file: 'dev-mapping-multiring.yaml'
+#                   controller:
+#                     id: controller_test
+
 mapping:
-  - translate:
-      x: 16
+  - scale:
+      factor: 1
       items:
-        - translate:
-            x: 56.6
-            y: 10
-            items:
-              - rotate:
-                  angle: 135  # 180-45
-                  items:
-                    - include:
-                        file: 'dev-mapping-matrix-32x32.yaml'
-                        controller:
-                          id: controller_3
-        - translate:
-            x: 17.6
-            y: 17
-            items:
-              - rotate:
-                  angle: 90
-                  items:
-                    - include:
-                        file: 'dev-mapping-matrix-32x32.yaml'
-                        controller:
-                          id: controller_3
-        - translate:
-            x: 8.3
-            y: 40.3
-            items:
-              - rotate:
-                  angle: 0
-                  items:
-                    - include:
-                        file: 'dev-mapping-multiring.yaml'
-                        controller:
-                          id: controller_3
+        - include:
+            file: 'dev-mapping-matrix-32x32.yaml'
+            controller:
+              id: controller_1
+          # - translate:
+          #     items:
+          #       - translate:
+          #           items:
+          #             - rotate:
+          #                 angle: -90
+          #                 items:
+          #                   - include:
+          #                       file: 'dev-mapping-multiring.yaml'
+          #                       controller:
+          #                         id: controller_3
+          #       - translate:
+          #           x: 13.3
+          #           items:
+          #             - rotate:
+          #                 angle: -90
+          #                 items:
+          #                   - include:
+          #                       file: 'dev-mapping-multiring.yaml'
+          #                       controller:
+          #                         id: controller_3
+          #       - translate:
+          #           x: 26.6
+          #           items:
+          #             - rotate:
+          #                 angle: -90
+          #                 items:
+          #                   - include:
+          #                       file: 'dev-mapping-multiring.yaml'
+          #                       controller:
+          #                         id: controller_3
+
+                # - translate:
+                #     x: 32
+                #     y: 0
+                #     items:
+                #       - rotate:
+                #           angle: -90
+                #           items:
+                #             - include:
+                #                 file: 'dev-mapping-matrix-32x32.yaml'
+                #                 controller:
+                #                   id: controller_3
+                # - translate:
+                #     x: 0
+                #     y: 0
+                #     items:
+                #       - rotate:
+                #           angle: 0
+                #           items:
+                #             - include:
+                #                 file: 'dev-mapping-matrix-32x32.yaml'
+                #                 controller:
+                #                   id: controller_3
 
 
 # # TODO: Scenes definition and startup run instruction

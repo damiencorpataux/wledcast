@@ -1,20 +1,23 @@
 # YAML mapping declaration
 from wledcast.mapper import Mapping, source
 mapping = Mapping.load('dev-mapping.yaml')
-mapping.display()
+mapping.display(scale=2)
 print(mapping)
 # mapping.display('svg')
 # import sys; sys.exit()
 
 # Some source mapped to mapping
 source.run(
-    fps=25,
+    fps=12,
     mapping=mapping,
-    display={'scale': 0.5},
+    # display={'scale': 0.5},
     generator=source.filter(
-        # sharpen=.15,
-        # brightness=.2,
-        # contrast=1.0,
+        sharpen=.75,
+        contrast=4, # 1.75,
+        saturation=1.5,
+        # balance_r=0.9,
+        # balance_g=1.0,
+        # balance_b=0.9,
         # generator=source.growing_square(side_size=max(mapping.size))))
         # generator=source.image_zoom('/Users/damien/Downloads/rubik-rotating.gif', size=mapping.size)))
         generator=source.screen(to_size=mapping.size)))

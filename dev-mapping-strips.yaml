@@ -1,7 +1,7 @@
 mapping:
   - translate:
       x: 28
-      y: 0
+      y: 20
       items:
         - translate:
             x: -14
@@ -13,6 +13,7 @@ mapping:
                     - matrix:
                         width: 1
                         height: 60
+                        firstled: bottomleft
         - translate:
             x: -10
             y: 0
@@ -23,6 +24,7 @@ mapping:
                     - matrix:
                         width: 1
                         height: 60
+                        firstled: bottomleft
         - translate:
             x: -6
             y: 0
@@ -33,6 +35,7 @@ mapping:
                     - matrix:
                         width: 1
                         height: 60
+                        firstled: bottomleft
         - translate:
             x: -2
             y: 0
@@ -43,6 +46,7 @@ mapping:
                     - matrix:
                         width: 1
                         height: 60
+                        firstled: bottomleft
         - translate:
             x: 2
             y: 0
@@ -53,6 +57,7 @@ mapping:
                     - matrix:
                         width: 1
                         height: 60
+                        firstled: bottomleft
         - translate:
             x: 6
             y: 0
@@ -63,6 +68,7 @@ mapping:
                     - matrix:
                         width: 1
                         height: 60
+                        firstled: bottomleft
         - translate:
             x: 10
             y: 0
@@ -73,6 +79,7 @@ mapping:
                     - matrix:
                         width: 1
                         height: 60
+                        firstled: bottomleft
         - translate:
             x: 14
             y: 0
@@ -83,3 +90,4 @@ mapping:
                     - matrix:
                         width: 1
                         height: 60
+                        firstled: bottomleft
