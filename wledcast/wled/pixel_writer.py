@@ -14,9 +14,8 @@ class PixelWriter:
 
     def update_pixels(self, rgb_array: numpy.ndarray):
         # Update the LED matrix via WLED in real-time using DDP
-        flat_screen_data = rgb_array.flatten().tolist()
-        # Convert the list to a bytearray
-        byte_data = bytearray(flat_screen_data)
+        # Convert numpy array directly to bytes for better performance
+        byte_data = rgb_array.flatten().tobytes()
 
         self._send_ddp_data(byte_data)
 
@@ -24,7 +23,7 @@ class PixelWriter:
         header = bytearray(10)
         header[0] = 0b01000000 | (0b00000001 if is_last_packet else 0)
         header[1] = self.sequence_id
-        header[2] = 0x01  # Data type set to 01
+        header[2] = 0x0B  # RGB, 8 bits per element
         header[3] = self.DDP_DESTINATION_ID
         header[4:8] = data_offset.to_bytes(4, byteorder="big")
         header[8:10] = len(data).to_bytes(2, byteorder="big")
